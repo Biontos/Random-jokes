@@ -3,8 +3,8 @@ import random
 from flask import Flask, render_template, jsonify, request
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
 from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 import numpy as np
 
