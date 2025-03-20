@@ -4,13 +4,14 @@ from flask import Flask, render_template, jsonify, request
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 import numpy as np
 
 tokenizer_gpt2 = GPT2Tokenizer.from_pretrained("gpt2")
 model_gpt2 = TFGPT2LMHeadModel.from_pretrained("gpt2")
 
+# Словарь для случайных шуток
 jokes_parts = {
     "начало": [
         "Когда жизнь даёт тебе лимоны,",
@@ -81,6 +82,7 @@ input_sequences = pad_sequences(input_sequences, maxlen=max_sequence_length, pad
 X, y = input_sequences[:, :-1], input_sequences[:, -1]
 y = keras.utils.to_categorical(y, num_classes=total_words)
 
+# Модель для генерации шуток
 model = keras.Sequential([
     keras.layers.Embedding(total_words, 64, input_length=max_sequence_length - 1),
     keras.layers.LSTM(100, return_sequences=True),
@@ -107,6 +109,7 @@ def generate_joke(seed_text, next_words=10):
 
 app = Flask(__name__)
 
+# Загрузка сохранённых шуток
 def load_saved_jokes():
     try:
         with open("saved_jokes.json", "r", encoding="utf-8") as f:
@@ -119,12 +122,7 @@ def load_saved_jokes():
     except json.JSONDecodeError:
         return []
 
-
-def save_saved_jokes(jokes):
-    with open("saved_jokes.json", "w", encoding="utf-8") as f:
-        json.dump(jokes, f, ensure_ascii=False, indent=4)
-
-
+# Сохранение шуток
 def save_saved_jokes(jokes):
     with open("saved_jokes.json", "w", encoding="utf-8") as f:
         json.dump(jokes, f, ensure_ascii=False, indent=4)
