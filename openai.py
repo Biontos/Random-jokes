@@ -5,11 +5,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 import numpy as np
 
 tokenizer_gpt2 = GPT2Tokenizer.from_pretrained("gpt2")
-model_gpt2 = GPT2LMHeadModel.from_pretrained("gpt2")
+model_gpt2 = TFGPT2LMHeadModel.from_pretrained("gpt2")
 
 jokes_parts = {
     "начало": [
