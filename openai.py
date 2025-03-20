@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 import numpy as np
 
-# Загружаем модель GPT-2 для генерации шуток
+# Загрузка GPT-2 модели
 tokenizer_gpt2 = GPT2Tokenizer.from_pretrained("gpt2")
 model_gpt2 = TFGPT2LMHeadModel.from_pretrained("gpt2")
 
@@ -62,16 +62,18 @@ jokes_parts = {
     ]
 }
 
+# Генерация случайной шутки
 def generate_random_joke():
     start = random.choice(jokes_parts["начало"])
     middle = random.choice(jokes_parts["середина"])
     return start + " " + middle
 
-# Подготовка данных для обучения модели генерации шуток
+# Инициализация токенизатора и модели для генерации шуток
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(["Когда жизнь даёт тебе лимоны, сделай лимонад."])
 total_words = len(tokenizer.word_index) + 1
 
+# Подготовка данных для обучения модели
 input_sequences = []
 for joke in ["Когда жизнь даёт тебе лимоны, сделай лимонад."]:
     token_list = tokenizer.texts_to_sequences([joke])[0]
@@ -82,20 +84,21 @@ for joke in ["Когда жизнь даёт тебе лимоны, сделай
 max_sequence_length = max([len(seq) for seq in input_sequences])
 input_sequences = pad_sequences(input_sequences, maxlen=max_sequence_length, padding='pre')
 X, y = input_sequences[:, :-1], input_sequences[:, -1]
-y = keras.utils.to_categorical(y, num_classes=total_words)
+y = tf.keras.utils.to_categorical(y, num_classes=total_words)
 
 # Модель для генерации шуток
-model = keras.Sequential([
-    keras.layers.Embedding(total_words, 64, input_length=max_sequence_length - 1),
-    keras.layers.LSTM(100, return_sequences=True),
-    keras.layers.LSTM(100),
-    keras.layers.Dense(100, activation='relu'),
-    keras.layers.Dense(total_words, activation='softmax')
+model = tf.keras.Sequential([
+    layers.Embedding(total_words, 64, input_length=max_sequence_length - 1),
+    layers.LSTM(100, return_sequences=True),
+    layers.LSTM(100),
+    layers.Dense(100, activation='relu'),
+    layers.Dense(total_words, activation='softmax')
 ])
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.fit(X, y, epochs=100, verbose=1)
 
+# Функция для генерации шутки на основе заданного текста
 def generate_joke(seed_text, next_words=10):
     for _ in range(next_words):
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
