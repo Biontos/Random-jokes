@@ -8,6 +8,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from transformers import TFGPT2LMHeadModel, GPT2Tokenizer
 import numpy as np
 
+# Загружаем модель GPT-2 для генерации шуток
 tokenizer_gpt2 = GPT2Tokenizer.from_pretrained("gpt2")
 model_gpt2 = TFGPT2LMHeadModel.from_pretrained("gpt2")
 
@@ -66,6 +67,7 @@ def generate_random_joke():
     middle = random.choice(jokes_parts["середина"])
     return start + " " + middle
 
+# Подготовка данных для обучения модели генерации шуток
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(["Когда жизнь даёт тебе лимоны, сделай лимонад."])
 total_words = len(tokenizer.word_index) + 1
