@@ -1,5 +1,5 @@
 Flask==2.3.2
 tensorflow==2.18.0
-transformers==4.22.1
+transformers==4.25.1
 numpy==1.26.0
-tokenizers==0.12.1
+tokenizers==0.13.2
